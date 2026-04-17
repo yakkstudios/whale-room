@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YAKK · Whale Room — Direct Access Portal</title>
+<meta name="description" content="Trader-grade Solana tools for 10M+ YST holders. Screener, Terminal, AI Trader, Alerts, OTC Desk, and more — in one streamlined surface." />
+<meta property="og:title" content="YAKK · Whale Room" />
+<meta property="og:description" content="Direct access portal for 10M+ YST holders." />
+<meta property="og:image" content="https://yakkstudios.xyz/yakk-logo.png" />
+<link rel="icon" href="https://yakkstudios.xyz/yakk-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --void: #050509;
+    --surface: #0d0d14;
+    --surface-2: #14141f;
+    --surface-3: #1c1c2a;
+    --border: rgba(255,255,255,0.07);
+    --border-soft: rgba(255,255,255,0.04);
+    --text: #f5f5f7;
+    --text-2: rgba(245,245,247,0.68);
+    --text-3: rgba(245,245,247,0.40);
+    --text-4: rgba(245,245,247,0.22);
+    --pink: #e0607e;
+    --pink-dim: rgba(224,96,126,0.12);
+    --gold: #f7c948;
+    --gold-dim: rgba(247,201,72,0.10);
+    --green: #7ef7a8;
+    --red: #f77e7e;
+    --font-body: 'DM Sans', sans-serif;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; top: -15%; left: 50%;
+    transform: translateX(-50%);
+    width: 1200px; height: 700px;
+    background: radial-gradient(ellipse,
+      rgba(224,96,126,0.06) 0%,
+      rgba(247,201,72,0.03) 35%,
+      transparent 65%
+    );
+    pointer-events: none; z-index: 0;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── NAV ───────────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    background: rgba(5,5,9,0.88);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-brand {
+    font-family: var(--font-head);
+    font-size: 0.9375rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text); display: flex; align-items: center; gap: 0.65rem;
+  }
+  .nav-brand .y {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    display: grid; place-items: center;
+    font-family: var(--font-head); font-weight: 800; font-size: 0.875rem;
+    color: var(--void);
+  }
+  .nav-brand .accent {
+    background: linear-gradient(90deg,var(--pink),var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-badge {
+    font-family: var(--font-mono); font-size: 0.625rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--pink); border: 1px solid rgba(224,96,126,0.3);
+    border-radius: 999px; padding: 0.3rem 0.8rem;
+  }
+  .nav-link {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-2); transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--text); }
+  .nav-main-cta {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.45rem 0.9rem; border-radius: 8px;
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    color: var(--void); font-weight: 700;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-main-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(224,96,126,0.3); }
+
+  /* ── HERO ──────────────────────────────────────────────── */
+  .hero {
+    max-width: 980px; margin: 0 auto;
+    padding: 140px 2rem 60px;
+    position: relative; z-index: 1;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 0.6875rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(247,201,72,0.3);
+    background: rgba(247,201,72,0.05);
+    border-radius: 999px; padding: 0.45rem 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .hero h1 {
+    font-family: var(--font-head);
+    font-size: clamp(2.5rem, 6.5vw, 4.75rem);
+    font-weight: 700; line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(90deg, var(--pink) 0%, var(--gold) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub {
+    font-size: 1.125rem;
+    color: var(--text-2);
+    max-width: 680px; margin: 0 auto 2rem;
+    line-height: 1.55;
+  }
+  .hero-meta {
+    display: inline-flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center;
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--text-3);
+    letter-spacing: 0.08em;
+  }
+  .hero-meta .dot { color: var(--pink); }
+  .hero-meta strong { color: var(--text); font-weight: 400; }
+
+  /* ── PRICE STRIP ──────────────────────────────────────── */
+  .price-strip {
+    max-width: 980px; margin: 2rem auto 0;
+    padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+  .price-strip-inner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .price-cell {
+    background: var(--surface);
+    padding: 1rem 1.25rem;
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+  .price-label {
+    font-family: var(--font-mono); font-size: 0.625rem;
+    color: var(--text-3); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .price-value {
+    font-family: var(--font-mono); font-size: 1rem; color: var(--text); font-weight: 700;
+  }
+  .price-value.loading { color: var(--text-4); }
+  .price-change { font-family: var(--font-mono); font-size: 0.75rem; }
+  .price-change.up { color: var(--green); }
+  .price-change.down { color: var(--red); }
+  @media (max-width: 720px) {
+    .price-strip-inner { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── SECTIONS ──────────────────────────────────────────── */
+  .section {
+    max-width: 1160px; margin: 0 auto;
+    padding: 4rem 2rem 1rem;
+    position: relative; z-index: 1;
+  }
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: var(--font-head);
+    font-size: 1.5rem; font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .section-title .icon { margin-right: 0.55rem; font-size: 1.15em; }
+  .section-blurb {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--text-3); letter-spacing: 0.08em;
+    text-align: right;
+  }
+
+  /* ── TOOL CARDS ────────────────────────────────────────── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.4rem 1.35rem;
+    display: flex; flex-direction: column;
+    gap: 0.6rem;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .tool-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(224,96,126,0) 0%, rgba(247,201,72,0) 100%);
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .tool-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(224,96,126,0.35);
+    background: var(--surface-2);
+  }
+  .tool-card:hover::before {
+    opacity: 1;
+    background: linear-gradient(135deg, rgba(224,96,126,0.05) 0%, rgba(247,201,72,0.03) 100%);
+  }
+  .tool-card-top {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .tool-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, rgba(224,96,126,0.15), rgba(247,201,72,0.08));
+    border: 1px solid rgba(224,96,126,0.2);
+    font-size: 1.15rem;
+  }
+  .tool-label {
+    font-family: var(--font-head); font-weight: 700;
+    font-size: 1rem; letter-spacing: 0.04em;
+    color: var(--text);
+  }
+  .tool-blurb {
+    font-size: 0.9rem; color: var(--text-2);
+    line-height: 1.5; flex: 1;
+  }
+  .tool-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-top: 0.35rem;
+  }
+  .tool-status {
+    color: var(--gold);
+  }
+  .tool-status.soon { color: var(--text-4); }
+  .tool-cta {
+    color: var(--pink); font-weight: 700;
+    display: inline-flex; gap: 0.35rem; align-items: center;
+  }
+
+  /* ── GATE NOTICE ───────────────────────────────────────── */
+  .gate-notice {
+    max-width: 1160px; margin: 3.5rem auto 0; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+  .gate-notice-inner {
+    background: linear-gradient(135deg, rgba(224,96,126,0.06), rgba(247,201,72,0.04));
+    border: 1px solid rgba(224,96,126,0.18);
+    border-radius: 14px;
+    padding: 1.75rem 2rem;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .gate-notice-text {
+    flex: 1; min-width: 260px;
+  }
+  .gate-notice-head {
+    font-family: var(--font-head); font-weight: 700; font-size: 1.125rem;
+    margin-bottom: 0.35rem; color: var(--text);
+  }
+  .gate-notice-body {
+    font-size: 0.9rem; color: var(--text-2);
+  }
+  .gate-cta {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.75rem 1.25rem; border-radius: 10px;
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    color: var(--void); font-weight: 700;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .gate-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(224,96,126,0.3); }
+
+  /* ── FOOTER ────────────────────────────────────────────── */
+  footer {
+    max-width: 1160px; margin: 4rem auto 2rem; padding: 2rem;
+    border-top: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+    gap: 1rem;
+    position: relative; z-index: 1;
+  }
+  .foot-copy {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--text-4); letter-spacing: 0.1em;
+  }
+  .foot-links {
+    display: flex; gap: 1.25rem;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .foot-links a { color: var(--text-3); transition: color 0.2s; }
+  .foot-links a:hover { color: var(--pink); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 1rem; }
+    .nav-right .nav-link { display: none; }
+    .hero { padding: 120px 1.25rem 40px; }
+    .section { padding: 3rem 1.25rem 0; }
+    .price-strip { padding: 0 1.25rem; }
+    .section-head { flex-direction: column; align-items: flex-start; }
+    .section-blurb { text-align: left; }
+    footer { padding: 2rem 1.25rem; flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/">
+    <span class="y">Y</span>
+    <span>YAKK <span class="accent">WHALE ROOM</span></span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="https://yakkstudios.xyz" target="_blank" rel="noopener">Main App ↗</a>
+    <a class="nav-main-cta" href="#tools">Enter</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <span class="hero-eyebrow">10M+ YST · DIRECT ACCESS</span>
+  <h1>Trader-grade tools.<br /><span class="gradient">Zero noise.</span></h1>
+  <p class="hero-sub">
+    The main app is built for everyone. This one is built for whales. Same YST, same gate, streamlined surface — Terminal, AI Trader, OTC Desk, Alerts, Yield, Launchpad, and more in one quiet room.
+  </p>
+  <div class="hero-meta">
+    <span><span class="dot">●</span> <strong>18</strong> whale-tier tools</span>
+    <span><span class="dot">●</span> Powered by <strong>$YST</strong></span>
+    <span><span class="dot">●</span> <strong>Mainnet</strong> live</span>
+  </div>
+</section>
+
+<div class="price-strip">
+  <div class="price-strip-inner">
+    <div class="price-cell">
+      <span class="price-label">$YST</span>
+      <span class="price-value loading" id="yst-price">loading…</span>
+      <span class="price-change" id="yst-change">—</span>
+    </div>
+    <div class="price-cell">
+      <span class="price-label">$LOCK</span>
+      <span class="price-value loading" id="lock-price">loading…</span>
+      <span class="price-change" id="lock-change">—</span>
+    </div>
+    <div class="price-cell">
+      <span class="price-label">$SPT</span>
+      <span class="price-value loading" id="spt-price">loading…</span>
+      <span class="price-change" id="spt-change">—</span>
+    </div>
+    <div class="price-cell">
+      <span class="price-label">SOL</span>
+      <span class="price-value loading" id="sol-price">loading…</span>
+      <span class="price-change" id="sol-change">—</span>
+    </div>
+  </div>
+</div>
+
+<main id="tools">
+
+  <!-- ── TRADE ── -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title"><span class="icon">📈</span>Trade</h2>
+      <span class="section-blurb">Screen · Chart · Execute</span>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card" href="https://yakkstudios.xyz/#terminal" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">⚡</div>
+          <div class="tool-label">TERMINAL</div>
+        </div>
+        <p class="tool-blurb">Pro trading terminal — live charts, depth, and real-time YAKK forensics layered on top.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#yakktrader" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🤖</div>
+          <div class="tool-label">AI TRADER</div>
+        </div>
+        <p class="tool-blurb">YAKK's auto-execution engine. Rules + signals + cabal heuristics, no keys leave your browser.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#predictions" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🎯</div>
+          <div class="tool-label">PREDICTIONS</div>
+        </div>
+        <p class="tool-blurb">Weekly market calls scored against on-chain outcomes. Skin-in-the-game whale-only leaderboard.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#alerts" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🔔</div>
+          <div class="tool-label">ALERTS</div>
+        </div>
+        <p class="tool-blurb">Whale-tier wallet &amp; cabal alerts piped to Telegram. Custom triggers, zero spam.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#otcdesk" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🤝</div>
+          <div class="tool-label">OTC DESK</div>
+        </div>
+        <p class="tool-blurb">Blocks too large for AMMs. Escrowed, whale-to-whale, pink-slip settlement.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#bridge" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🌉</div>
+          <div class="tool-label">BRIDGE</div>
+        </div>
+        <p class="tool-blurb">Cross-chain routing with whale-tier rebate on fees. SOL · ETH · BASE.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#tgbot" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">📱</div>
+          <div class="tool-label">TG BOT</div>
+        </div>
+        <p class="tool-blurb">Telegram companion — trade, alerts, and YAKK signals from your chat.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── EARN ── -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title"><span class="icon">💰</span>Earn</h2>
+      <span class="section-blurb">Stake · Farm · Compound</span>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card" href="https://yakkstudios.xyz/#yieldfinder" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">💰</div>
+          <div class="tool-label">YIELD FINDER</div>
+        </div>
+        <p class="tool-blurb">Sorted farm list across Solana DeFi. Filters for IL risk, TVL depth, and payout asset.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#launchpad" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🦅</div>
+          <div class="tool-label">VENTURES</div>
+        </div>
+        <p class="tool-blurb">Early allocations on YAKK-vetted launches. Forensics report attached to every listing.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#portfolio" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">📊</div>
+          <div class="tool-label">PORTFOLIO</div>
+        </div>
+        <p class="tool-blurb">Unified wallet view — YST, farms, NFTs, LP positions. Tax exports on request.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── WHALE LABS ── -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title"><span class="icon">🐋</span>Whale Labs</h2>
+      <span class="section-blurb">Premium playground</span>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card" href="https://yakkstudios.xyz/#nftmarket" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🖼️</div>
+          <div class="tool-label">NFT MARKET</div>
+        </div>
+        <p class="tool-blurb">Whale-curated marketplace. Lower fees, zero botting, full provenance chain.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#raffle" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🎟️</div>
+          <div class="tool-label">NFT RAFFLE</div>
+        </div>
+        <p class="tool-blurb">Weekly whale-tier raffles. Weighted entry by YST held, verifiable on-chain draw.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#artlab" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🎨</div>
+          <div class="tool-label">ART LAB</div>
+        </div>
+        <p class="tool-blurb">Commission, collab, or mint inside the YAKK ecosystem. Whales only, no gas-tourists.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#privacy" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🕵️</div>
+          <div class="tool-label">PRIVACY</div>
+        </div>
+        <p class="tool-blurb">Stealth-routing toolkit: mixer whitelist, cold-path swaps, wallet hygiene scanner.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#update" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">📋</div>
+          <div class="tool-label">CHANGELOG</div>
+        </div>
+        <p class="tool-blurb">Every YAKK shipment, every week. Inside-baseball detail only whales need.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── INVESTIGATE ── -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title"><span class="icon">🕵️</span>Investigate</h2>
+      <span class="section-blurb">Intel only for the people who can act on it</span>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card" href="https://yakkstudios.xyz/#trusted" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🛡️</div>
+          <div class="tool-label">TRUSTED LIST</div>
+        </div>
+        <p class="tool-blurb">Whale-tier shortlist of vetted projects. Curated, revised weekly, zero pay-for-play.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+
+      <a class="tool-card" href="https://yakkstudios.xyz/#raids" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">⚔️</div>
+          <div class="tool-label">RAID HUB</div>
+        </div>
+        <p class="tool-blurb">Coordinated exposures on active cabals. Receipts bundled, signal amplified.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── COMMUNITY ── -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title"><span class="icon">👥</span>Community</h2>
+      <span class="section-blurb">Whale-only channels</span>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card" href="https://yakkstudios.xyz/#whaleclub" target="_blank" rel="noopener">
+        <div class="tool-card-top">
+          <div class="tool-icon">🐋</div>
+          <div class="tool-label">WHALE CLUB</div>
+        </div>
+        <p class="tool-blurb">Private chat, weekly call, and direct line to the YAKK ops desk. 10M+ only.</p>
+        <div class="tool-foot"><span class="tool-status">● LIVE</span><span class="tool-cta">Open →</span></div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<div class="gate-notice">
+  <div class="gate-notice-inner">
+    <div class="gate-notice-text">
+      <div class="gate-notice-head">Not a whale yet?</div>
+      <div class="gate-notice-body">Every tool here is gated at 10M YST on the main app. The portal is a surface, not a bypass — your wallet is still checked when you open any tool.</div>
+    </div>
+    <a class="gate-cta" href="https://yakkstudios.xyz" target="_blank" rel="noopener">Go to main app ↗</a>
+  </div>
+</div>
+
+<footer>
+  <span class="foot-copy">© 2026 YAKK STUDIOS · WHALE ROOM v0.1</span>
+  <div class="foot-links">
+    <a href="https://yakkstudios.xyz" target="_blank" rel="noopener">Main</a>
+    <a href="https://yakkstudios.xyz/#whitepaper" target="_blank" rel="noopener">Whitepaper</a>
+    <a href="https://yakkstudios.xyz/terms" target="_blank" rel="noopener">Terms</a>
+    <a href="https://yakkstudios.xyz/privacy" target="_blank" rel="noopener">Privacy</a>
+  </div>
+</footer>
+
+<script>
+  // Live prices from main YAKK screener API.
+  // Fails silently — ticker stays in loading state rather than showing broken data.
+  (async () => {
+    try {
+      const res = await fetch('https://www.yakkstudios.xyz/api/screener', { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      const rows = Array.isArray(data) ? data : (data.tokens || data.rows || []);
+      const by = {};
+      for (const r of rows) {
+        const sym = (r.symbol || r.ticker || '').toUpperCase();
+        if (sym) by[sym] = r;
+      }
+      const fmt = (v) => {
+        if (v == null || isNaN(v)) return '—';
+        if (v >= 1) return '$' + Number(v).toFixed(4);
+        if (v >= 0.01) return '$' + Number(v).toFixed(4);
+        return '$' + Number(v).toFixed(8);
+      };
+      const setCell = (id, row) => {
+        const priceEl = document.getElementById(id + '-price');
+        const chgEl = document.getElementById(id + '-change');
+        if (!priceEl || !chgEl || !row) return;
+        // GeckoTerminal-powered screener returns: price (number), chg (h24 %)
+        const price = row.price ?? row.priceUsd ?? row.base_token_price_usd;
+        priceEl.textContent = fmt(price);
+        priceEl.classList.remove('loading');
+        const chg = row.chg ?? row.priceChange24h ?? row.change24h ?? 0;
+        if (chg != null) {
+          const n = Number(chg);
+          chgEl.textContent = (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+          chgEl.classList.add(n >= 0 ? 'up' : 'down');
+        }
+      };
+      setCell('yst', by.YST);
+      setCell('lock', by.LOCK);
+      setCell('spt', by.SPT);
+      setCell('sol', by.SOL);
+    } catch (e) {
+      // swallow — we never break the UI because an external API hiccuped
+    }
+  })();
+</script>
+
+</body>
+</html>
